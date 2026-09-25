@@ -33,7 +33,8 @@ host's `public_html` folder, then point splitwire.tech at it.
 ## Editing
 - Brand colours and fonts: variables in `:root` at the top of `css/style.css`.
 - Header and footer are repeated in each page — update them in all 5 pages.
-- Contact form opens a pre-filled email to intake@splitwire.tech (see `js/main.js`).
+- Contact form submits into a Google Form (responses land in its linked Google Sheet).
+  Set `GFORM_ID` and the `GFORM_FIELDS` entry IDs at the top of the form code in `js/main.js`.
 
 ## Before launch
 - Replace the recreated logo with the official logo from the brand guidelines.

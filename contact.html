@@ -64,8 +64,9 @@
       <div class="card form-card reveal">
         <p class="eyebrow">Service request</p>
         <h2>Request a technician</h2>
-        <p>Fill this out and it opens a pre-filled email to our intake team — no account needed.</p>
+        <p>Fill this out and it goes straight to our intake team — no account needed.</p>
         <form class="form" id="reqForm" novalidate>
+          <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" style="display:none">
           <div class="field"><label for="f-name">Full name</label><input id="f-name" name="name" placeholder="Jordan Rivera" required autocomplete="name"></div>
           <div class="field"><label for="f-co">Company</label><input id="f-co" name="company" placeholder="Company name" autocomplete="organization"></div>
           <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" placeholder="you@company.com" required autocomplete="email"></div>

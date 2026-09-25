@@ -65,10 +65,21 @@
     }, 4200);
   }
 
-  /* Service request form -> pre-filled email (contact page) */
+  /* Service request form -> Google Form (contact page) */
+  // From the Google Form's pre-filled link: the form ID and each question's entry ID.
+  var GFORM_ID = '1FAIpQLSckqIwlAMfJxaNIPPH9Rqim7W-E8qXdcbN2g8y76uDmTR7WHA';
+  var GFORM_FIELDS = {
+    name: 'entry.1402843735',
+    company: 'entry.1813888766',
+    email: 'entry.1852012031',
+    phone: 'entry.1987098863',
+    service: 'entry.881791538',
+    message: 'entry.1248535144'
+  };
   var form = document.getElementById('reqForm');
   if (form) {
     var note = document.getElementById('formNote');
+    var btn = form.querySelector('button[type="submit"]');
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var d = new FormData(form);
@@ -80,15 +91,27 @@
         (name ? form.email : form.name).focus();
         return;
       }
-      var body = 'Name: ' + name + '\nCompany: ' + (d.get('company') || '-') + '\nEmail: ' + email +
-        '\nPhone: ' + (d.get('phone') || '-') + '\nService needed: ' + d.get('service') +
-        '\n\nJob details:\n' + (d.get('message') || '-');
-      var url = 'mailto:intake@splitwire.tech?subject=' +
-        encodeURIComponent('Service request: ' + d.get('service') + ' — ' + name) +
-        '&body=' + encodeURIComponent(body);
+      var done = function () {
+        form.reset();
+        btn.disabled = false;
+        note.style.color = '';
+        note.textContent = 'Thanks, ' + name + '! Your request is in — our intake team will reply to ' + email + ' shortly.';
+      };
+      // Honeypot: bots tick the hidden box; pretend success without sending.
+      if (d.get('botcheck')) return done();
+      var body = new URLSearchParams();
+      Object.keys(GFORM_FIELDS).forEach(function (k) { body.append(GFORM_FIELDS[k], (d.get(k) || '').trim()); });
+      btn.disabled = true;
       note.style.color = '';
-      note.textContent = 'Opening your email app with the request filled in. If nothing opens, email intake@splitwire.tech directly.';
-      window.location.href = url;
+      note.textContent = 'Sending your request…';
+      // Google doesn't allow reading the response (no-cors), so only network errors are detectable.
+      fetch('https://docs.google.com/forms/d/e/' + GFORM_ID + '/formResponse', { method: 'POST', mode: 'no-cors', body: body })
+        .then(done)
+        .catch(function () {
+          btn.disabled = false;
+          note.style.color = '#C0392B';
+          note.textContent = 'Something went wrong sending your request. Please call +1 (945) 272-8551 or email intake@splitwire.tech.';
+        });
     });
   }
 })();
